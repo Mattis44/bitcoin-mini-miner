@@ -1,11 +1,9 @@
 {
-    "difficulty": 13,
+    "difficulty": 15,
     "block": {
         "nonce": null,
         "data": [
-            ["fa45898e9d33eeaf887668bbe5b9c1d3", 48],
-            ["542c18db582d9dc023a3ad32db80ccd8", -90],
-            ["50398b3630abd718eb8dbb2b9c2e89a5", 82]
+            ["fa45898e9d33eeaf887668bbe5b9c1d3", 0]
         ]
     }
 }

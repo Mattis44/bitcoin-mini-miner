@@ -2,19 +2,15 @@
 #include <iomanip>
 
 #include "lib/BlockLoader.h"
+#include "lib/Generator.h"
 
 int main(int argc, char const *argv[])
 {
-    auto blocks = BlockLoader::load_all_blocks_template();
-    
-    for (const auto &block : blocks) {
-        std::cout << "[🧱] Block #" << std::setw(6) << std::setfill('0') << block.get_id() << "\n";
-        std::cout << "   [📊] Difficulty : " << block.get_difficulty() << "\n";
-        std::cout << "   [📦] Data:\n";
-        for (const auto &pair : block.get_block().get_data()) {
-            std::cout << "     • 🔗 " << pair.first << " → " << pair.second << "\n";
-        }
-        std::cout << "--------------------------------------------------\n";
+    auto next_block = Generator::generate_next();
+    std::cout << "Next block generated with ID: " << next_block.get_id() << std::endl;
+    std::cout << "Difficulty: " << next_block.get_difficulty() << std::endl;
+    std::cout << "Block data:" << std::endl;
+    for (const auto &data : next_block.get_block().get_data()) {
+        std::cout << "  Hash: " << data.first << ", Score: " << data.second << std::endl;
     }
-    return 0;
 }
