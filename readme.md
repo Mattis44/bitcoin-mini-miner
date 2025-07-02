@@ -8,8 +8,8 @@ This is a C++ solution for the Mini Miner challenge on [Hackattic](https://hacka
 ## Installation
 Clone the repository:
 ```bash
-git clone
-cd Miner
+git clone https://github.com/Mattis44/bitcoin-mini-miner.git
+cd bitcoin-mini-miner
 ```
 Install dependencies using vcpkg:
 ```bash
