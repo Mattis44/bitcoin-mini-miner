@@ -1,8 +1,8 @@
-/build/
-/Debug/
-/Release/
-/CMakeFiles/
-/cmake-build-*/
+*/build/
+*/Debug/
+*/Release/
+*/CMakeFiles/
+*/cmake-build-*/
 
 CMakeCache.txt
 Makefile

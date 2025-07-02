@@ -1,11 +1,11 @@
 #pragma once
 
 #include <string>
-#include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
+#include <cpr/cpr.h>
 #include <iostream>
 #include <variant>
-#include "utils/Miner.h"
+#include "lib/Miner.h"
 
 using json = nlohmann::json;
 
