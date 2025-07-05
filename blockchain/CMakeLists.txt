@@ -11,5 +11,14 @@ target_include_directories(blockchain PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 find_package(nlohmann_json REQUIRED)
 find_package(OpenSSL REQUIRED)
+find_package(Crow REQUIRED)
 
-target_link_libraries(blockchain PRIVATE nlohmann_json::nlohmann_json OpenSSL::Crypto)
+add_definitions(-D_WIN32_WINNT=0x0A00)
+
+target_link_libraries(
+    blockchain PRIVATE 
+    nlohmann_json::nlohmann_json 
+    OpenSSL::Crypto 
+    OpenSSL::SSL
+    Crow::Crow 
+)

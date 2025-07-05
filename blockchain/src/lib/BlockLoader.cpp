@@ -76,10 +76,14 @@ BlockTemplate BlockLoader::load_block_template(unsigned int id) {
             parsed_data.emplace_back(entry[0].get<std::string>(), entry[1].get<int>());
         }
 
-        Block block(parsed_data);
+        std::string previous_hash = j["block"]["previous_hash"].get<std::string>();
+        uint64_t timestamp = j["block"]["timestamp"].get<uint64_t>();
+        
+        Block block(parsed_data, previous_hash, timestamp, j["block"]["nonce"].is_null() ? std::nullopt : std::make_optional(j["block"]["nonce"].get<unsigned int>()));
         BlockTemplate bt;
         bt.set_id(id);
         bt.set_difficulty(j["difficulty"].get<unsigned int>());
+        bt.set_hash(j.contains("hash") ? std::make_optional(j["hash"].get<std::string>()) : std::nullopt);
         bt.set_block(block);
 
         return bt;

@@ -1,6 +1,8 @@
 {
   "dependencies": [
     "openssl",
-    "nlohmann-json"
+    "nlohmann-json",
+    "crow",
+    "boost-beast"
   ]
 }

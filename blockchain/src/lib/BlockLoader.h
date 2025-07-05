@@ -17,8 +17,13 @@ class BlockLoader {
         static std::vector<BlockTemplate> load_all_blocks_template();
         static BlockTemplate load_block_template(unsigned int id);
         static unsigned int get_last_block_id() {
-            return std::distance(fs::directory_iterator("../blocks"), fs::directory_iterator{});
+            auto count = std::distance(fs::directory_iterator("../blocks"), fs::directory_iterator{});
+            if (count < 0 || static_cast<uint64_t>(count) > std::numeric_limits<unsigned int>::max()) {
+                throw std::runtime_error("[BlockLoader] Too many blocks or invalid block count.");
+            }
+            return static_cast<unsigned int>(count);
         }
+
         static unsigned int get_next_block_id() {
             return get_last_block_id() + 1;
         }
