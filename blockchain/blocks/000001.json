@@ -1,7 +1,7 @@
 {
     "id": 1,
     "hash": "fa45898e9d33eeaf887668bbe5b9c1d3",
-    "difficulty": 15,
+    "difficulty": 17,
     "block": {
         "nonce": 12500,
         "previous_hash": "fa45898e9d33eeaf887668bbe5b9c1d3",
