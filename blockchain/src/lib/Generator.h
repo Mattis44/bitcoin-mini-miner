@@ -8,4 +8,5 @@ class Generator {
         static std::string generate_hash();
     public:
         static BlockTemplate generate_next();
+        static void save_nonce_hash(unsigned int id, uint64_t nonce, const std::string &hash);
 };

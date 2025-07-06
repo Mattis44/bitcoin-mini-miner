@@ -7,39 +7,46 @@
 #include <openssl/sha.h>
 #include <sstream>
 #include <iomanip>
+#include <iostream>
 
 
 using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 
 
 class Miner {
     private:
+        std::string previous_hash;
+        uint64_t timestamp;
         std::pair<unsigned int, json> data;
-        unsigned int nonce = 0;
+        uint64_t nonce = 0;
 
     public:
-        Miner(std::pair<unsigned int, json> init_data) : data(std::move(init_data)) {}
+        Miner(std::string prev_hash, uint64_t timestp, std::pair<unsigned int, json> init_data)
+            : previous_hash(std::move(prev_hash)), timestamp(timestp), data(std::move(init_data)) {}
 
-        std::string get_data_txs() {
+        std::string get_data() {
             return data.second;
         }
         unsigned int get_difficulty() {
             return data.first;
         }
-        unsigned int get_nonce() {
+        uint64_t get_nonce() {
             return nonce;
         }
         void up_nonce() {
             nonce += 1;
         }
-        json get_current_full_data() {
-            return {
-                {"data", data.second},
-                {"nonce", nonce}
-            };
+        ordered_json get_current_full_data() {
+            ordered_json j;
+            j["previous_hash"] = previous_hash;
+            j["timestamp"] = timestamp;
+            j["data"] = data.second;
+            j["nonce"] = nonce;
+            return j;
         }
 
-        std::string sha256(const std::string& input) {
+        std::string sha256(const std::string &input) {
             unsigned char hash[SHA256_DIGEST_LENGTH];
             SHA256(reinterpret_cast<const unsigned char*>(input.c_str()), input.size(), hash);
 
@@ -64,7 +71,7 @@ class Miner {
             return oss.str();
         }
 
-        static bool has_leading_zero_bits(const std::array<unsigned char, SHA256_DIGEST_LENGTH>& hash, int bits) {
+        static bool has_leading_zero_bits(const std::array<unsigned char, SHA256_DIGEST_LENGTH> &hash, int bits) {
             int full_bytes = bits / 8;
             int remaining_bits = bits % 8;
 

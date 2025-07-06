@@ -26,11 +26,22 @@ class API {
             }
         }
 
-        void post(const std::string &url, json &body) {
+        std::string post(const std::string &url, json &body) {
             cpr::Response r = cpr::Post(
                 cpr::Url{url},
                 cpr::Header{{"Content-Type", "application/json"}},
                 cpr::Body{body.dump()}
             );
+            if (r.error) {
+                return std::string("Error occurred: ") + r.text;
+            }
+            if (r.status_code != 200 && r.status_code != 201) {
+                return std::string("HTTP request failed ") + std::to_string(r.status_code) + ": " + r.text;
+            }
+            try {
+                return r.text;
+            } catch (const std::exception &e) {
+                throw std::runtime_error("Failed to parse response: " + std::string(e.what()));
+            }
         }
 };

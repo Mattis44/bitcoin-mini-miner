@@ -29,7 +29,7 @@ std::string Generator::generate_hash() {
 unsigned int Generator::get_random_difficulty() {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> diff_dist(10, 16);
+    std::uniform_int_distribution<> diff_dist(14, 20);
     return diff_dist(gen);
 }
 
@@ -39,11 +39,14 @@ BlockTemplate Generator::generate_next() {
         throw std::runtime_error("[Generator] Cannot generate the first block, please create a genesis block manually.");
     }
     unsigned int difficulty = get_random_difficulty();
-    std::string previous_hash = BlockLoader::load_block_template(next_id - 1).get_hash().value();
-    std::cout << previous_hash << std::endl;
-    if (previous_hash.empty()) {
-        throw std::runtime_error("[Generator] Previous block hash is empty, cannot generate next block.");
+    auto previous_block = BlockLoader::load_block_template(next_id - 1);
+    auto previous_hash_opt = previous_block.get_hash();
+
+    if (!previous_hash_opt.has_value()) {
+        throw std::runtime_error("[Generator] Previous block hash missing: block was probably not mined correctly.");
     }
+
+    std::string previous_hash = previous_hash_opt.value();
     auto now = std::chrono::system_clock::now();
     auto duration = now.time_since_epoch();
     uint64_t timestamp = std::chrono::duration_cast<std::chrono::seconds>(duration).count();
@@ -82,4 +85,25 @@ BlockTemplate Generator::generate_next() {
     bt.set_block(block);
 
     return bt;
+}
+
+void Generator::save_nonce_hash(unsigned int id, uint64_t nonce, const std::string &hash) {
+    std::ostringstream path;
+    path << "../blocks/" << std::setw(6) << std::setfill('0') << id << ".json";
+    
+    std::ifstream input(path.str());
+    if (!input) {
+        throw std::runtime_error("[Generator] Could not open block file for ID: " + std::to_string(id));
+    }
+
+    json j;
+    input >> j;
+    input.close();
+
+    j["block"]["nonce"] = nonce;
+    j["hash"] = hash;
+
+    std::ofstream output(path.str());
+    output << std::setw(2) << j;
+    output.close();
 }

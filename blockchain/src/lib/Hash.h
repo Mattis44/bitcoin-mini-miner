@@ -4,8 +4,12 @@
 #include <string>
 #include <iomanip>
 #include <openssl/sha.h>
+#include <nlohmann/json.hpp>
+#include <iostream>
 
 #include "Block.h"
+
+using ordered_json = nlohmann::ordered_json;
 
 class Hash {
     public:
@@ -20,21 +24,23 @@ class Hash {
             return ss.str();
         }
 
-        std::string compute_block_hash(const Block &block) {
-            std::stringstream ss;
-            ss << block.get_previous_hash() << block.get_timestamp();
+       std::string compute_block_hash(const Block &block) {
+            ordered_json payload;
+            payload["previous_hash"] = block.get_previous_hash();
+            payload["timestamp"] = block.get_timestamp();
+            payload["data"] = ordered_json::array();
+
+            for (const auto &pair : block.get_data()) {
+                payload["data"].push_back({pair.first, pair.second});
+            }
 
             if (block.get_nonce().has_value()) {
-                ss << block.get_nonce().value();
-            } else {
-                ss << NAN;
+                payload["nonce"] = block.get_nonce().value();
             }
 
-            for (const auto &data : block.get_data()) {
-                ss << data.first << data.second;
-            }
 
-            return sha256(ss.str());
+            std::string dumped = payload.dump();
+            return sha256(dumped);
         }
 
         bool check_difficulty(const std::string &hash, unsigned int difficulty) {
